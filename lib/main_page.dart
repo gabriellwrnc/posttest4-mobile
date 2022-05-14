@@ -1,5 +1,58 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:posttest4_1915026020_gabriel/alert_dialog.dart';
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    splashScreenStart();
+  }
+
+  splashScreenStart() {
+    var duration = Duration(seconds: 3);
+    return Timer(duration, () {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return LandingPage();
+      }));
+    });
+  }
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xffD80032),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              "assets/logo1.png",
+              width: 90,
+              height: 90,
+            ),
+            const Text(
+              "AYO DONOR",
+              style: TextStyle(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+                color: Color(0xffEDF2F4),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class LandingPage extends StatelessWidget {
   const LandingPage({Key? key}) : super(key: key);
@@ -148,34 +201,40 @@ class MainPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(top: tinggi / 6),
-                    width: 200,
-                    height: 60,
-                    decoration: BoxDecoration(
-                        color: Color(0xffEF233C),
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.shade500,
-                            offset: Offset(6, 6),
-                            blurRadius: 15,
-                            spreadRadius: 1,
-                          ),
-                          BoxShadow(
-                            color: Colors.white,
-                            offset: Offset(-6, -6),
-                            blurRadius: 5,
-                            spreadRadius: 1,
-                          ),
-                        ]),
-                    alignment: Alignment.center,
-                    child: Text("Lakukan Screening",
-                        style: TextStyle(
-                          color: Colors.grey[300],
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                        )),
+                  GestureDetector(
+                    onTap: () {
+                      CustomAlert(
+                          context, "Masukkan data dengan jujur dan teliti");
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(top: tinggi / 6),
+                      width: 200,
+                      height: 60,
+                      decoration: BoxDecoration(
+                          color: Color(0xffEF233C),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.shade500,
+                              offset: Offset(6, 6),
+                              blurRadius: 15,
+                              spreadRadius: 1,
+                            ),
+                            BoxShadow(
+                              color: Colors.white,
+                              offset: Offset(-6, -6),
+                              blurRadius: 5,
+                              spreadRadius: 1,
+                            ),
+                          ]),
+                      alignment: Alignment.center,
+                      child: Text("Lakukan Screening",
+                          style: TextStyle(
+                            color: Colors.grey[300],
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          )),
+                    ),
                   ),
                 ],
               ),
@@ -253,14 +312,117 @@ class MainPage extends StatelessWidget {
   }
 }
 
+class ScreeningPage extends StatefulWidget {
+  const ScreeningPage({Key? key}) : super(key: key);
+
+  @override
+  State<ScreeningPage> createState() => _ScreeningPageState();
+}
+
+enum Survive { laki, perempuan, yes1, no1 }
+
+class _ScreeningPageState extends State<ScreeningPage> {
+  final controllerUmur = TextEditingController();
+  String hiv = "", umur = "";
+  Survive? penyakit = Survive.yes1;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Row(
+          children: [
+            Image.asset(
+              "assets/logo1.png",
+              fit: BoxFit.contain,
+              height: 28,
+            ),
+            Text(
+              " AYO DONOR",
+              style: TextStyle(
+                fontSize: 20,
+              ),
+            )
+          ],
+        ),
+        backgroundColor: Color(0xffba0001),
+      ),
+      body: ListView(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.all(10),
+                child: TextFormField(
+                  controller: controllerUmur,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Umur",
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Text("Apakah anda pernah mengidap HIV/AIDS : "),
+              ),
+              Row(
+                children: [
+                  Radio(
+                      activeColor: Color(0xffba0001),
+                      value: Survive.yes1,
+                      groupValue: penyakit,
+                      onChanged: (Survive? value) {
+                        setState(() {
+                          penyakit = value;
+                        });
+                        if (value == Survive.yes1) {
+                          hiv = "Pernah";
+                        }
+                      }),
+                  Text("Pernah"),
+                ],
+              ),
+              Row(
+                children: [
+                  Radio(
+                      activeColor: Color(0xffba0001),
+                      value: Survive.no1,
+                      groupValue: penyakit,
+                      onChanged: (Survive? value) {
+                        setState(() {
+                          penyakit = value;
+                          if (value == Survive.no1) {
+                            hiv = "Tidak Pernah";
+                          }
+                        });
+                      }),
+                  Text("Tidak Pernah"),
+                ],
+              ),
+              Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Color(0xffEF233C),
+                  ),
+                  onPressed: (() {}),
+                  child: Text("Submit"),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
-
-enum Survive { laki, perempuan }
 
 class _ProfilePageState extends State<ProfilePage> {
   final controllerNama = TextEditingController();
