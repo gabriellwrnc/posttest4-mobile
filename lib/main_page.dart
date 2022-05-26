@@ -1,8 +1,9 @@
 import 'dart:async';
-
+import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:posttest4_1915026020_gabriel/alert_dialog.dart';
+import 'package:posttest4_1915026020_gabriel/controller_getx.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -21,9 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
   splashScreenStart() {
     var duration = Duration(seconds: 3);
     return Timer(duration, () {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-        return LandingPage();
-      }));
+      Get.off(LandingPage());
     });
   }
 
@@ -111,9 +110,7 @@ class MyButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
-          return MainPage();
-        }));
+        Get.off(MainPage());
       },
       child: Container(
         margin: EdgeInsets.only(top: 200),
@@ -203,8 +200,8 @@ class MainPage extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      CustomAlert(
-                          context, "Masukkan data dengan jujur dan teliti");
+                      CustomAlert(context,
+                          "Pastikan anda memasukkan data dengan benar");
                     },
                     child: Container(
                       margin: EdgeInsets.only(top: tinggi / 6),
@@ -253,10 +250,7 @@ class MainPage extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (_) {
-                        return LandingPage();
-                      }));
+                      Get.off(LandingPage());
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -285,9 +279,7 @@ class MainPage extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) {
-                        return ProfilePage();
-                      }));
+                      Get.to(NewProfilePage());
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -319,12 +311,15 @@ class ScreeningPage extends StatefulWidget {
   State<ScreeningPage> createState() => _ScreeningPageState();
 }
 
-enum Survive { laki, perempuan, yes1, no1 }
+enum Survive { laki, perempuan, yes1, no1, yes2, no2, yes3, no3 }
 
 class _ScreeningPageState extends State<ScreeningPage> {
   final controllerUmur = TextEditingController();
-  String hiv = "", umur = "";
+  final controllerBerat = TextEditingController();
+  String hiv = "", umur = "", hiv1 = "", hepatitis = "";
   Survive? penyakit = Survive.yes1;
+  Survive? pasangan1 = Survive.yes2;
+  Survive? penyakit1 = Survive.yes3;
 
   @override
   Widget build(BuildContext context) {
@@ -359,6 +354,16 @@ class _ScreeningPageState extends State<ScreeningPage> {
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: "Umur",
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(10),
+                child: TextFormField(
+                  controller: controllerBerat,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Berat Badan",
                   ),
                 ),
               ),
@@ -400,6 +405,84 @@ class _ScreeningPageState extends State<ScreeningPage> {
                   Text("Tidak Pernah"),
                 ],
               ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Text(
+                    "Apakah anda memiliki pasangan yg mengidap HIV/AIDS? : "),
+              ),
+              Row(
+                children: [
+                  Radio(
+                      activeColor: Color(0xffba0001),
+                      value: Survive.yes2,
+                      groupValue: pasangan1,
+                      onChanged: (Survive? value) {
+                        setState(() {
+                          pasangan1 = value;
+                        });
+                        if (value == Survive.yes2) {
+                          hiv1 = "Pernah";
+                        }
+                      }),
+                  Text("Pernah"),
+                ],
+              ),
+              Row(
+                children: [
+                  Radio(
+                      activeColor: Color(0xffba0001),
+                      value: Survive.no2,
+                      groupValue: pasangan1,
+                      onChanged: (Survive? value) {
+                        setState(() {
+                          pasangan1 = value;
+                          if (value == Survive.no2) {
+                            hiv1 = "Tidak Pernah";
+                          }
+                        });
+                      }),
+                  Text("Tidak Pernah"),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Text(
+                    "Apakah anda atau pasangan pernah melakukan kontak dengan seseorang yang memiliki hepatitis B atau C? : "),
+              ),
+              Row(
+                children: [
+                  Radio(
+                      activeColor: Color(0xffba0001),
+                      value: Survive.yes3,
+                      groupValue: penyakit1,
+                      onChanged: (Survive? value) {
+                        setState(() {
+                          penyakit1 = value;
+                        });
+                        if (value == Survive.yes3) {
+                          hepatitis = "Pernah";
+                        }
+                      }),
+                  Text("Pernah"),
+                ],
+              ),
+              Row(
+                children: [
+                  Radio(
+                      activeColor: Color(0xffba0001),
+                      value: Survive.no3,
+                      groupValue: penyakit1,
+                      onChanged: (Survive? value) {
+                        setState(() {
+                          penyakit1 = value;
+                          if (value == Survive.no3) {
+                            hepatitis = "Tidak Pernah";
+                          }
+                        });
+                      }),
+                  Text("Tidak Pernah"),
+                ],
+              ),
               Center(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -417,21 +500,13 @@ class _ScreeningPageState extends State<ScreeningPage> {
   }
 }
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+class NewProfilePage extends StatelessWidget {
+  NewProfilePage({Key? key}) : super(key: key);
 
-  @override
-  State<ProfilePage> createState() => _ProfilePageState();
-}
-
-class _ProfilePageState extends State<ProfilePage> {
+  ControllerGet getController = Get.put(ControllerGet());
   final controllerNama = TextEditingController();
   final controllerAlamat = TextEditingController();
   final controllerGoldar = TextEditingController();
-  String nama = "", alamat = "", goldar = "", gender = "", outputGender = "";
-  bool submit = false;
-  Survive? kelamin = Survive.laki;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -498,75 +573,28 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Text("Jenis Kelamin : "),
-              ),
-              Row(
-                children: [
-                  Radio(
-                      activeColor: Color(0xffba0001),
-                      value: Survive.laki,
-                      groupValue: kelamin,
-                      onChanged: (Survive? value) {
-                        setState(() {
-                          kelamin = value;
-                        });
-                        if (value == Survive.laki) {
-                          gender = "Laki-laki";
-                        }
-                      }),
-                  Text("Laki - laki"),
-                ],
-              ),
-              Row(
-                children: [
-                  Radio(
-                      activeColor: Color(0xffba0001),
-                      value: Survive.perempuan,
-                      groupValue: kelamin,
-                      onChanged: (Survive? value) {
-                        setState(() {
-                          kelamin = value;
-                          if (value == Survive.perempuan) {
-                            gender = "Perempuan";
-                          }
-                        });
-                      }),
-                  Text("Perempuan"),
-                ],
-              ),
               Center(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     primary: Color(0xffEF233C),
                   ),
                   onPressed: (() {
-                    setState(() {
-                      nama = "Nama anda : " + controllerNama.value.text;
-                      alamat =
-                          "Alamat anda di : " + controllerAlamat.value.text;
-                      goldar = "Golongan darah anda : " +
-                          controllerGoldar.value.text;
-                      outputGender = "Jenis Kelamin anda : " + gender;
-                    });
-                    submit = true;
+                    getController.nama.value = controllerNama.value.text;
+                    getController.alamat.value = controllerAlamat.value.text;
+                    getController.goldar.value = controllerGoldar.value.text;
                   }),
                   child: Text("Submit"),
                 ),
               ),
-              if (submit) ...[
-                Text(
-                  "Data diri anda : ",
-                  style: TextStyle(
-                    fontSize: 16,
-                  ),
+              Text(
+                "Data diri anda : ",
+                style: TextStyle(
+                  fontSize: 16,
                 ),
-                Text("$nama"),
-                Text("$alamat"),
-                Text("$goldar"),
-                Text("$outputGender"),
-              ],
+              ),
+              Text("Nama anda : ${getController.nama}"),
+              Text("Alamat anda di : ${getController.alamat}"),
+              Text("Golongan darah anda : ${getController.goldar}"),
             ],
           ),
         ],
