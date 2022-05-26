@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:posttest4_1915026020_gabriel/main_page.dart';
 
 Future<dynamic> CustomAlert(BuildContext context, String teks) {
@@ -11,10 +12,8 @@ Future<dynamic> CustomAlert(BuildContext context, String teks) {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.push(context, MaterialPageRoute(builder: (_) {
-                  return ScreeningPage();
-                }));
+                Get.back();
+                Get.to(ScreeningPage());
               },
               child: Text("OK"),
             )
